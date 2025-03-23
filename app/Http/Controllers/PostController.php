@@ -11,10 +11,10 @@ class PostController extends Controller
 {
     public function store(Request $request)
     {
-        $request->validate([  
-            'content' => 'nullable|string',  
-            'file' => 'nullable|file|mimes:jpg,jpeg,png,mp4,mov,avi|max:20248',  
-        ]);  
+        $request->validate([
+            'content' => 'nullable|string',
+            'file' => 'nullable|file|mimes:jpg,jpeg,png,mp4,mov,avi|max:20248',
+        ]);
 
         $imagePath = null;
         if ($request->hasFile('file')) {
@@ -32,11 +32,10 @@ class PostController extends Controller
 
     public function index()
     {
-        $posts = Post::with('user_id')->latest()->get();
-
-        if($posts->isEmpty()) {
-            dd('error', 'No posts found.');
-        }
+        $posts = Post::with('user')->latest()->get();
+        // if($posts->isEmpty()) {
+        //     dd('error', 'No posts found.');
+        // }
         return view('users.index', compact('posts'));
     }
 

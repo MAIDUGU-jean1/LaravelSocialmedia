@@ -32,9 +32,14 @@ class PostController extends Controller
 
     public function index()
     {
-        $posts = Post::with('user')->latest()->get();
-        return view('posts.index', compact('posts'));
+        $posts = Post::with('user_id')->latest()->get();
+
+        if($posts->isEmpty()) {
+            dd('error', 'No posts found.');
+        }
+        return view('users.index', compact('posts'));
     }
+
 
     public function destroy(Post $post)
     {

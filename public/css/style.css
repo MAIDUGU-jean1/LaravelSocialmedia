@@ -1,8 +1,4 @@
-/*!
- * Argon Social v0.1 (https://artmin96.github.io/argon-social)
- * Copyright 2019 Arthur Minasyan
- * Licensed under MIT (https://github.com/ArtMin96/argon-social/blob/master/LICENSE.md)
- */
+
 
 *,
 *::after,
@@ -23,13 +19,13 @@ body {
     overflow-x: hidden;
 }
 
-.js body {
+/* .js body {
     display: none;
-}
-
+} */
+/* 
 @-ms-viewport {
     width: device-width
-}
+} */
 
 a,
 a:hover {
@@ -69,7 +65,7 @@ button:focus {
 .w-shadow {
     box-shadow: 5px 30px 26px -20px #b6b6b6;
 }
-
+ */
 /* Fonts */
 .fs-5 {
     font-size: 0.5rem;

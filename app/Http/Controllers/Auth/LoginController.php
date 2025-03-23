@@ -20,7 +20,7 @@ class LoginController extends Controller
         'password' => 'required',
     ]);
 
-  
+
     $user = User::where('email', $request->email)->first();
 
     if (!$user) {
@@ -32,7 +32,7 @@ class LoginController extends Controller
     }
 
     if (Auth::attempt($request->only('email', 'password'))) {
-        return redirect()->route('index')->with('success', 'Welcome back!');
+        return redirect()->route('posts.index')->with('success', 'Welcome back!');
     }
 
     return back()->with('error', 'Invalid email or password.');

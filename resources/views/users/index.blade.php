@@ -22,20 +22,20 @@
     <link rel="stylesheet" href="{{ asset('css/chat.css') }}" rel="stylesheet">
     <script src="{{ asset('js/load.js') }} " type="text/javascript"></script>
     <link href="https://vjs.zencdn.net/7.4.1/video-js.css" rel="stylesheet">
-    <script src="https://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js" type="text/javascript"></script> 
-     
-    <style>
-        .newsfeed-right-side-content {  
-    display: flex;  
-    justify-content: center; 
-    align-items: center;    
-    text-align: center;       
-    flex-direction: column;   
-}  
+    <script src="https://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js" type="text/javascript"></script>
 
-    </style> 
-       
-</head> 
+    <style>
+        .newsfeed-right-side-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    flex-direction: column;
+}
+
+    </style>
+
+</head>
 
 
 <body class="newsfeed">
@@ -81,7 +81,7 @@
                                             </div>
                                         </div>
                                         <!-- notify content -->
-                                        
+
                                     </ul>
                             </form>
                             <li class="nav-item s-nav">
@@ -115,7 +115,7 @@
 
                 </nav>
                 <div class="row newsfeed-right-side-content mt-3">
-                  
+
                     <div class="col-md-6 second-section" id="page-content-wrapper">
                         <div class="mb-3">
                             <div class="btn-group d-flex">
@@ -123,7 +123,7 @@
                                     <img src="{{ asset('images/icons/theme/speech.png') }}" class="mr-2" alt="quick links icon">
                                     <span class="fs-8">Speech</span>
                                 </a>
-                              
+
                                 <a href="watch.html" class="btn btn-quick-links">
                                     <img src="{{ asset('images/icons/theme/watch.png') }}" class="mr-2" alt="quick links icon">
                                     <span class="fs-8">Watch</span>
@@ -158,15 +158,15 @@
                         </ul>
 
                       </form>
-                      
+
                         <!-- Posts -->
                         @foreach ($posts as $post)
                         <div class="posts-section mb-5">
                             <div class="post border-bottom p-3 bg-white w-shadow">
                                 <!-- Post Header (User Info) -->
                                 <div class="media text-muted pt-3">
-                                    <img src="{{ asset($post->user->profile_picture ?? 'images/default-user.jpg') }}" 
-                                         alt="User profile" 
+                                    <img src="{{ asset($post->user->profile_picture ?? 'images/default-user.jpg') }}"
+                                         alt="User profile"
                                          class="mr-3 post-user-image">
                                     <div class="media-body pb-3 mb-0 small lh-125">
                                         <div class="d-flex justify-content-between align-items-center w-100">
@@ -177,12 +177,12 @@
                                         <span class="d-block">{{ $post->created_at->diffForHumans() }} <i class='bx bx-globe ml-3'></i></span>
                                     </div>
                                 </div>
-                    
+
                                 <!-- Post Content -->
                                 <div class="mt-3">
                                     <p>{{ $post->content }}</p>
                                 </div>
-                    
+
                                 <!-- Post Image (If Exists) -->
                                 @if ($post->image)
                                     <div class="d-block mt-3">
@@ -192,9 +192,9 @@
                             </div>
                         </div>
                     @endforeach
-                    
-                    
-                    
+
+
+
                 </div>
             </div>
         </div>
@@ -348,7 +348,7 @@
     </div>
 -->
     <!-- END Chat Popup -->
-    
+
     <!-- Call modal -->
     <div id="callModal" class="modal fade call-modal" tabindex="-1" role="dialog" aria-labelledby="callModalLabel" aria-hidden="true">
         <div class="modal-dialog call-modal-dialog" role="document">
@@ -402,7 +402,7 @@
         });
 
     </script>
-    
+
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ asset('js/components/components.js') }}"></script>
 </body>

@@ -34,10 +34,10 @@ class RegisterController extends Controller
         if ($request->hasFile('profile_picture')) {
             $profilePicturePath = $request->file('profile_picture')->store('profile_pictures', 'public');
         } else {
-            $profilePicturePath = 'default/profile.png'; 
+            $profilePicturePath = 'default/default_profile.jpeg'; 
         }
 
-        $verificationCode = Str::random(6);
+        $verificationCode = random_int(100000, 999999);  
 
 
         $user = User::create([
@@ -58,4 +58,5 @@ class RegisterController extends Controller
         return redirect()->route('verification.form')->withInput();
     }
     //
-}
+} 
+

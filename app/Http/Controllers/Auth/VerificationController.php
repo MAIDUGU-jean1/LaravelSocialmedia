@@ -14,38 +14,39 @@ use Illuminate\Support\Str;
 class VerificationController extends Controller
 {
 
-    public function sendPasswordResetLink(Request $request)
-{
+//     public function sendPasswordResetLink(Request $request)
+// {
   
-    $request->validate([
-        'email' => 'required|email|exists:users,email',
-    ]);
+//     $request->validate([
+//         'email' => 'required|email|exists:users,email',
+//     ]);
 
 
-    $status = Password::sendResetLink($request->only('email'));
+//     $status = Password::sendResetLink($request->only('email'));
 
-    return $status === Password::RESET_LINK_SENT
-        ? back()->with('success', 'A password reset link has been sent to your email.')
-        : back()->with('error', 'Unable to send password reset link.');
-}
+//     return $status === Password::RESET_LINK_SENT
+//         ? back()->with('success', 'A password reset link has been sent to your email.')
+//         : back()->with('error', 'Unable to send password reset link.');
+// }
 
     
      public function showVerificationForm()
      {
-        
          return view('auth.verify');
      }
+
+
 
 
      public function verify(Request $request)
 {
 
     $request->validate([
-        //'email' => 'required|email',
         'verification_code' => 'required|string',
     ]);
 
     // dd($request);
+    
     $user = User::where('email', $request->email)->first();
 
     if (!$user) {

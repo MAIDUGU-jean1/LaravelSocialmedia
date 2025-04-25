@@ -28,7 +28,11 @@ class User extends Authenticatable
         'verification_expires_at',
         'is_verified',
     ];
-    
+    public function likes()
+{
+    return $this->hasMany(Like::class);
+}
+
     
     protected $casts = [
         'is_verified' => 'boolean',

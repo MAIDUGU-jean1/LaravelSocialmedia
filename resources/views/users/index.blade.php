@@ -1,6 +1,8 @@
 
 <html lang="en" class="no-js">
-
+<?php
+ use Carbon\Carbon;
+?>
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -14,6 +16,9 @@
     <link href="{{ asset('css/boxicons.min.css') }}" rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css">
+<!-- Bootstrap 5 CDN -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <link rel="stylesheet" href="{{ asset('css/bootstrap/bootstrap.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}" rel="stylesheet">
@@ -31,6 +36,18 @@
     align-items: center;
     text-align: center;
     flex-direction: column;
+}
+.profile-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+.post-content {
+    width: 100%; 
+    height: 600px;
+    object-fit: cover;
+    border-radius: 10px;
 }
 
     </style>
@@ -87,8 +104,9 @@
                             <li class="nav-item s-nav">
                                 <a href="profile.html" class="nav-link nav-links">
                                     <div class="menu-user-image">
-                                        <img src="{{ asset('images/users/user-4.jpg') }}" class="menu-user-img ml-1" alt="Menu Image">
-                                    </div>
+                                    {{-- <img src="{{ asset('storage/' . Auth::user()?->profile_picture) }}" alt="Profile" class="profile-img" alt="Menu Image"> --}}
+                                    <img src="{{ Auth::user()->profile_picture ? asset('storage/' . Auth::user()->profile_picture) : asset('images/default_profile.jpeg') }}" alt="Profile"  class="profile-img" alt="Menu Image">
+                                    {{-- <div> <h1>welcome {{ Auth::user()->firstname }}</h1></div> --}}
                                 </a>
                             </li>
                             <li class="nav-item s-nav nav-icon dropdown">
@@ -104,8 +122,12 @@
                                     </a>
                                     <a class="dropdown-item" href="#">
                                         <img src="{{ asset('images/icons/navbar/gear-1.png') }}" alt="Navbar icon"> Settings</a>
-                                    <a class="dropdown-item logout-btn" href="#">
-                                        <img src="{{ asset('images/icons/navbar/logout.png') }}" alt="Navbar icon"> Log Out</a>
+                                    <form action="{{ route('logout') }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item">
+                                            <img src="{{ asset('images/icons/navbar/logout.png') }}" alt="Navbar icon"> Logout
+                                        </button>
+                                    </form>
                                 </div>
                             </li>
                             <button type="button" class="btn nav-link" id="menu-toggle"><img src="{{ asset('images/icons/theme/navs.png') }}" alt="Navbar navs"></button>
@@ -136,12 +158,12 @@
                             <li class="media post-form w-shadow">
                                 <div class="media-body">
                                     <div class="form-group post-input">
-                                        <textarea class="form-control" id="postForm" rows="2" placeholder="What's on your mind, Arthur?"></textarea>
+                                        <textarea class="form-control" name="content" id="postForm" rows="2" placeholder="What's on your mind?"></textarea>
                                     </div>
                                     <div class="row post-form-group">
                                         <div class="col-md-9">
                                                 <img src="{{ asset('images/icons/theme/post-image.png') }}" alt="post form icon"> <span>Photo/Video</span>
-                                            <input type="file">
+                                            <input type="file" name="file">
                                             <button type="button" class="btn btn-link post-form-btn btn-sm">
                                                 <img src="{{ asset('images/icons/theme/tag-friend.png') }}" alt="post form icon"> <span>Tag Friends</span>
                                             </button>
@@ -163,35 +185,149 @@
                         @foreach ($posts as $post)
                         <div class="posts-section mb-5">
                             <div class="post border-bottom p-3 bg-white w-shadow">
-                                <!-- Post Header (User Info) -->
+                                <?php
+                                           
+                                $created_at = Carbon::now()->diffForHumans();
+                            ?>
                                 <div class="media text-muted pt-3">
-                                    <img src="{{ asset($post->user->profile_picture ?? 'images/default-user.jpg') }}"
-                                         alt="User profile"
-                                         class="mr-3 post-user-image">
+                                    {{-- <img src="{{ $post->user->profile_picture ? asset('storage/' . $post->user->profile_picture) : asset('images/default_profile.jpeg') }}" alt="Profile" 
+                                    class="profile-img me-2"> --}}
+                                    <img src="{{ $post->user->profile_picture ? asset('storage/' . $post->user->profile_picture) : asset('images/default_profile.jpeg') }}" alt="Profile" 
+                                    class="profile-img me-2">
                                     <div class="media-body pb-3 mb-0 small lh-125">
                                         <div class="d-flex justify-content-between align-items-center w-100">
                                             <a href="#" class="text-gray-dark post-user-name">
-                                                {{ $post->user->firstname }} {{ $post->user->lastname }}
+                                                {{ $post->user->firstname }} {{ $post->user->lastname }}<br>
                                             </a>
                                         </div>
-                                        <span class="d-block">{{ $post->created_at->diffForHumans() }} <i class='bx bx-globe ml-3'></i></span>
-                                    </div>
+                                    
+                                        <span> {{$post->user->name }}</span>
+                                        
+                                     </div>
                                 </div>
 
-                                <!-- Post Content -->
-                                <div class="mt-3">
+                               
+                                <div class="mt-3" style="text-align: left; gap:20px;">
                                     <p>{{ $post->content }}</p>
                                 </div>
 
-                                <!-- Post Image (If Exists) -->
-                                @if ($post->image)
+                             
+                                @if ($post->file)
                                     <div class="d-block mt-3">
-                                        <img src="{{ asset('storage/' . $post->image) }}" class="post-content" alt="Post image">
+                                       <img src="{{ asset('storage/' . $post->file) }}" class="post-content" alt="Post image">
                                     </div>
                                 @endif
+                                
+                                <div style="display: flex">
+                                    
+                                        <div class="argon-reaction">
+                                            <span class="like-btn">
+                                                <a href="javascript:void(0)" class="post-card-buttons like-button" id="reactions" data-post-id="{{ $post->id }}"><i class='bx bxs-like mr-2'></i>
+                                                    <span id="like-count-{{ $post->id }}">{{ $post->likes()->count() }}</span>
+                                                </a>
+                                                <ul class="reactions-box dropdown-shadow">
+                                                    <li class="reaction reaction-like" data-reaction="Like"></li>
+                                                    <li class="reaction reaction-love" data-reaction="Love"></li>
+                                                    <li class="reaction reaction-haha" data-reaction="HaHa"></li>
+                                                    <li class="reaction reaction-wow" data-reaction="Wow"></li>
+                                                    <li class="reaction reaction-sad" data-reaction="Sad"></li>
+                                                    <li class="reaction reaction-angry" data-reaction="Angry"></li>
+                                                </ul>
+                                            </span>
+                                        </div>
+                                    
+                                    
+                                    <div class="mb-3">
+                                        <span class="comment-btn">
+                                            {{-- <a href="javascript:void(0)" class="post-card-buttons show-comments" data-post-id="{{ $post->id }}">
+                                                <i class='bx bx-message-rounded mr-2'></i> 
+                                                <span id="comment-count-{{ $post->id }}">{{ $post->comments_count }}</span>
+                                            </a> --}}
+                                         
+                                            <button class="btn btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#commentSection{{ $post->id }}">
+                                                💬 Comment
+                                            </button>
+
+                                        </span>
+                                    </div>
+                       
+                                    <!-- Collapsible Comment Section -->
+<div class="collapse mt-3" id="commentSection{{ $post->id }}">
+    <div class="card card-body">
+        <!-- Existing Comments -->
+        @forelse($post->comments as $comment)
+            <div class="mb-2 p-2 border rounded">
+                <strong>{{ $comment->user->name }}</strong>
+                <p>{{ $comment->body }}</p>
+                <small class="text-muted">{{ $comment->created_at->diffForHumans() }}</small>
+            </div>
+        @empty
+            <p class="text-muted">No comments yet.</p>
+        @endforelse
+
+        <!-- Comment Form -->
+        @auth
+        <form action="{{ route('comments.store', $post->id) }}" method="POST" class="mt-3">
+            @csrf
+            <div class="form-group mb-2">
+                <textarea name="body" class="form-control" rows="3" placeholder="Write your comment..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm">Post Comment</button>
+        </form>
+        @else
+            <p><a href="{{ route('login') }}">Log in</a> to leave a comment.</p>
+        @endauth
+    </div>
+</div>
+
+                                    <!-- Comment Modal -->
+    <div class="modal fade" id="commentModal{{ $post->id }}" tabindex="-1" aria-labelledby="commentModalLabel{{ $post->id }}" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        
+        <div class="modal-header">
+          <h5 class="modal-title" id="commentModalLabel{{ $post->id }}">Comments for: {{ Str::limit($post->title, 40) }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+  
+        <div class="modal-body">
+          <!-- Existing Comments -->
+          @forelse($post->comments as $comment)
+              <div class="mb-2 p-2 border rounded">
+                  <strong>{{ $comment->user->name }}</strong>
+                  <p>{{ $comment->body }}</p>
+                  <small class="text-muted">{{ $comment->created_at->diffForHumans() }}</small>
+              </div>
+          @empty
+              <p class="text-muted">No comments yet.</p>
+          @endforelse
+  
+          <!-- Comment Form -->
+          @auth
+          <form action="{{ route('comments.store', $post->id) }}" method="POST" class="mt-3">
+              @csrf
+              <div class="form-group mb-2">
+                  <textarea name="body" class="form-control" rows="3" placeholder="Write your comment..." required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary btn-sm">Post Comment</button>
+          </form>
+          @else
+              <p><a href="{{ route('login') }}">Log in</a> to leave a comment.</p>
+          @endauth
+  
+        </div>
+      </div>
+    </div>
+  </div>
+  
+    
+                                                                
+                                    
+                                </div>
                             </div>
-                        </div>
-                    @endforeach
+                        @endforeach
+                                </div>
+                                
 
 
 
@@ -249,145 +385,34 @@
         </div>
     </div>
 
-    <!-- Chat Popup -->
-<!--
-    <div class="chat-popup shadow" id="hide-in-mobile">
-        <div class="row chat-window col-xs-5 col-md-3">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="top-bar shadow-sm d-flex align-items-center">
-                        <div class="col-md-6 col-xs-6">
-                            <a href="profile.html">
-                                <img src="assets/images/users/user-2.jpg" class="mr-2 chatbox-user-img" alt="Chat user image">
-                                <span class="panel-title">Karen Minas</span>
-                            </a>
-                        </div>
-                        <div class="col-md-6 col-xs-6 d-flex align-items-center justify-content-between">
-                            <a href="#">
-                                <img src="assets/images/icons/messenger/video-call.png" class="chatbox-call" alt="Chatbox contact types">
-                            </a>
-                            <a href="#" data-toggle="modal" data-target="#callModal">
-                                <img src="assets/images/icons/messenger/call.png" class="chatbox-call" alt="Chatbox contact types">
-                            </a>
-                            <a href="javascript:void(0)"><i id="minimize-chat-window" class="bx bx-minus icon_minim"></i></a>
-                            <a href="javascript:void(0)" id="close-chatbox"><i class="bx bx-x"></i></a>
-                        </div>
-                    </div>
-                    <div id="messagebody" class="msg_container_base">
-                        <div class="row msg_container base_sent">
-                            <div class="col-md-10 col-xs-10">
-                                <div class="messages message-reply bg-primary shadow-sm">
-                                    <p>Are you going to the party on Saturday?</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row msg_container base_receive">
-                            <div class="col-md-10 col-xs-10">
-                                <div class="messages message-receive shadow-sm">
-                                    <p>I was thinking about it. Are you?</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row msg_container base_receive">
-                            <div class="col-xs-10 col-md-10">
-                                <div class="messages message-receive shadow-sm">
-                                    <p>Really? Well, what time does it start?</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row msg_container base_sent">
-                            <div class="col-xs-10 col-md-10">
-                                <div class="messages message-reply bg-primary shadow-sm">
-                                    <p>It starts at 8:00 pm, and I really think you should go.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row msg_container base_receive">
-                            <div class="col-xs-10 col-md-10">
-                                <div class="messages message-receive shadow-sm">
-                                    <p>Well, who else is going to be there?</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row msg_container base_sent">
-                            <div class="col-md-10 col-xs-10">
-                                <div class="messages message-reply bg-primary shadow-sm">
-                                    <p>Everybody from school.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer chat-inputs">
-                        <div class="col-md-12 message-box">
-                            <input type="text" class="w-100 search-input type-message" placeholder="Type a message..." />
-                            <div class="chat-tools">
-                                <a href="#" class="chatbox-tools">
-                                    <img src="assets/images/icons/theme/post-image.png" class="chatbox-tools-img" alt="Chatbox tool">
-                                </a>
-                                <a href="#" class="chatbox-tools">
-                                    <img src="assets/images/icons/messenger/gif.png" class="chatbox-tools-img" alt="Chatbox tool">
-                                </a>
-                                <a href="#" class="chatbox-tools">
-                                    <img src="assets/images/icons/messenger/smile.png" class="chatbox-tools-img" alt="Chatbox tool">
-                                </a>
-                                <a href="#" class="chatbox-tools">
-                                    <img src="assets/images/icons/messenger/console.png" class="chatbox-tools-img" alt="Chatbox tool">
-                                </a>
-                                <a href="#" class="chatbox-tools">
-                                    <img src="assets/images/icons/messenger/attach-file.png" class="chatbox-tools-img" alt="Chatbox tool">
-                                </a>
-                                <a href="#" class="chatbox-tools">
-                                    <img src="assets/images/icons/messenger/photo-camera.png" class="chatbox-tools-img" alt="Chatbox tool">
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
--->
-    <!-- END Chat Popup -->
 
-    <!-- Call modal -->
-    <div id="callModal" class="modal fade call-modal" tabindex="-1" role="dialog" aria-labelledby="callModalLabel" aria-hidden="true">
-        <div class="modal-dialog call-modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header align-items-center">
-                    <div class="call-status">
-                        <h1 id="callModalLabel" class="modal-title mr-3">Connected</h1>
-                        <span class="online-status bg-success"></span>
-                    </div>
-                    <div class="modal-options d-flex align-items-center">
-                        <button type="button" class="btn btn-quick-link" id="minimize-call-window">
-                            <i class='bx bx-minus'></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="modal-body">
-                    <div class="row h-100">
-                        <div class="col-md-12 d-flex align-items-center justify-content-center">
-                            <div class="call-user text-center">
-                                <div class="call-user-img-anim">
-                                    <img src="{{ asset('images/users/user-1.jpg') }}" class="call-user-img" alt="Call user image">
-                                </div>
-                                <p class="call-user-name">Name Surename</p>
-                                <p class="text-muted call-time">05:28</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4 offset-md-4 d-flex align-items-center justify-content-between call-btn-list">
-                            <a href="#" class="btn call-btn" data-toggle="tooltip" data-placement="top" data-title="Disable microphone"><i class='bx bxs-microphone'></i></a>
-                            <a href="#" class="btn call-btn" data-toggle="tooltip" data-placement="top" data-title="Enable camera"><i class='bx bxs-video-off'></i></a>
-                            <a href="#" class="btn call-btn drop-call" data-toggle="tooltip" data-placement="top" data-title="End call" data-dismiss="modal" aria-label="Close"><i class='bx bxs-phone'></i></a>
-                            <a href="#" class="btn call-btn" data-toggle="tooltip" data-placement="top" data-title="Share Screen"><i class='bx bx-laptop'></i></a>
-                            <a href="#" class="btn call-btn" data-toggle="tooltip" data-placement="top" data-title="Dark mode"><i class='bx bx-moon'></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- END call modal -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $(".like-button").on("click", function() {
+                var postId = $(this).data("post-id");
+                var likeBtn = $(this);
+                var likeCount = $("#like-count-" + postId);
+    
+                $.ajax({
+                    url: "/posts/" + postId + "/like",
+                    type: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        if (response.liked) {
+                            likeBtn.html("<i class='bx bxs-like mr-2'></i> " + response.likes_count);
+                        } else {
+                            likeBtn.html("<i class='bx bx-like mr-2'></i> " + response.likes_count);
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+        
+    
 
     <!-- Core -->
     <script src="{{ asset('js/jquery/jquery-3.3.1.min.js') }}"></script>

@@ -17,7 +17,6 @@ class LoginController extends Controller
 {
     $request->validate([
         'email' => 'required|email',
-
         'password' => 'required',
     ]);
 
@@ -38,6 +37,15 @@ class LoginController extends Controller
 
     return back()->with('error', 'Invalid email or password.');
 }
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        
+        $request->session()->invalidate();
+        $request->session()->regenerateToken(); 
+
+        return redirect()->route('login.form');
+    }
 
     //
 }
